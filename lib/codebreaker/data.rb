@@ -1,5 +1,5 @@
 module Codebreaker
-  class Statistics
+  class Data
     class << self
       def statistics(games)
         games = games.sort_by(&:hints).sort_by(&:attempts).sort_by { |game| -game.difficulty }
