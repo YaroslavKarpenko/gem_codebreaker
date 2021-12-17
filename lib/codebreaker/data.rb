@@ -1,26 +1,34 @@
+# frozen_string_literal: true
+
+require_relative 'autoloader'
 module Codebreaker
-  class Data
-    class << self
-      def statistics(games)
-        games = games.sort_by(&:hints).sort_by(&:attempts).sort_by { |game| -game.difficulty }
-        grouping_statistics(games)
-      end
+  module Data
+    include Constants
 
-      private
+    def fetch_game_data(game)
+      results = {}
+      results[:name] = game.user.name
+      results[:difficulty] = game.difficulty
+      results[:available_attempts] = DIFFICULTIES[game.difficulty][:attempts]
+      results[:available_hints] = DIFFICULTIES[game.difficulty][:hints]
+      results.merge(fetch_user_data(game))
+    end
 
-      def get_total_results(games)
-        games.group_by(&:name).transform_values do |grouped_games|
-          { attemts: grouped_games.collect(&:attempts).sum, hints: grouped_games.collect(&:hints).sum }
-        end
-      end
+    def fetch_user_data(game)
+      user_data = {}
+      user_data[:used_attempts] = used_attempts(game)
+      user_data[:used_hints] = used_hints(game)
+      user_data
+    end
 
-      def grouping_statistics(games)
-        total_results = get_total_results(games)
-        games.map.with_index do |game, index, name = game.name|
-          [index + 1, name, game.difficulty, total_results[name][:attemts], game.attempts, total_results[name][:hints],
-           game.hints]
-        end
-      end
+    private
+
+    def used_attempts(game)
+      DIFFICULTIES[game.difficulty][:attempts] - game.user.attempts
+    end
+
+    def used_hints(game)
+      DIFFICULTIES[game.difficulty][:hints] - game.user.hints
     end
   end
 end
