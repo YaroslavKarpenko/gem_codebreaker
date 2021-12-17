@@ -1,108 +1,77 @@
-require_relative 'validation/errors'
-require_relative 'validation/validate'
+# frozen_string_literal: true
+
+require_relative 'autoloader'
 
 module Codebreaker
   class Game
-    include Validate
+    include Constants
+    include Validation
+    include CoreMatrix
 
-    attr_reader :secret_code, :difficulty, :attempts, :hints, :name
+    attr_reader :secret_code, :user, :attempts, :hints, :name
+    attr_accessor :difficulty
 
-    SECRET_CODE_RANGE = (1..6).to_a.freeze
-    SECRET_CODE_LENGTH = 4
-    INCLUSION_SYMBOL = '-'.freeze
-    CORRECT_POSITION_SYMBOL = '+'.freeze
-
-    DIFFICULTIES = {
-      easy: { attempts: 15, hints: 2 },
-      medium: { attempts: 10, hints: 1 },
-      hell: { attempts: 5, hints: 1 }
-    }.freeze
-
-    def initialize
-      @secret_code = ''
-      @difficulty = 0
-      @attempts = 0
-      @hints = 0
-      @name = ''
+    def initialize(secret_code: '', user: User.new, difficulty: DIFFICULTIES, phase: START_POINT)
+      @secret_code = secret_code
+      @user = user
+      @difficulty = difficulty
+      @phase = phase
     end
 
     def start
-      @secret_code = SECRET_CODE_RANGE.sample(SECRET_CODE_LENGTH).join
-      @available_hints = @secret_code.dup
-    end
+      raise PhaseError unless @phase == START_POINT
 
-    def generate_matrix(inputted_guess)
-      guess_validator(inputted_guess)
-      @attempts += 1
-      matrix(inputted_guess)
+      @secret_code = SECRET_CODE_RANGE.sample(SECRET_CODE_LENGTH)
+      @available_hints = @secret_code.dup
+      @phase = GAME_IN_PROGRESS
+      assign_difficulty
     end
 
     def use_hint
-      return ' ' if @available_hints.empty?
+      return nil if @available_hints.empty?
 
-      hint = @available_hints.chars.sample
-      @available_hints.sub!(hint, '')
-      @hints += 1
+      hint = @available_hints.sample
+      @available_hints.delete_at(@available_hints.find_index(hint))
+      user.hints -= 1
       hint
     end
 
-    def difficulty=(difficulty)
-      @difficulty = DIFFICULTIES.keys.index(difficulty)
+    def assign_difficulty
+      user.attempts = DIFFICULTIES[@difficulty][:attempts]
+      user.hints = DIFFICULTIES[@difficulty][:hints]
     end
 
-    def name=(name)
-      name_validator(name)
-      @name = name
+    def check_for_hints?
+      (user.hints <= DIFFICULTIES[@difficulty][:hints]) && user.hints.positive?
     end
 
-    def present_hints?
-      @hints < DIFFICULTIES.values[difficulty][:hints]
-    end
-
-    def present_attempts?
-      @attempts < DIFFICULTIES.values[difficulty][:attempts]
+    def check_for_attempts?
+      (user.attempts < DIFFICULTIES[@difficulty][:attempts]) && user.attempts.positive?
     end
 
     def available_difficulties
       DIFFICULTIES
     end
 
-    def available_attempts
-      DIFFICULTIES.values[difficulty][:attempts] - @attempts
+    def win?(result)
+      return unless result == @secret_code
+
+      @phase = WIN
+      true
     end
 
-    def available_hints
-      DIFFICULTIES.values[difficulty][:hints] - @hints
+    def lose?
+      return unless user.attempts.zero?
+      raise PhaseError unless user.attempts.zero?
+
+      @phase = LOSE
+      true
     end
 
-    private
-
-    def matrix(inputted_guess)
-      inputted_guess, matrix, unnecessary_char = check_position_in_matrix(inputted_guess)
-      _, matrix, = check_for_inclusion_in_matrix(inputted_guess, matrix, unnecessary_char)
-      matrix
-    end
-
-    def check_position_in_matrix(inputted_guess)
-      matrix = ''
-      unnecessary_char = ''
-      (0...SECRET_CODE_LENGTH).select { |index| inputted_guess[index] == @secret_code[index] }.reverse_each do |index|
-        matrix += CORRECT_POSITION_SYMBOL
-        unnecessary_char += inputted_guess.slice!(index)
-      end
-      [inputted_guess, matrix, unnecessary_char]
-    end
-
-    def check_for_inclusion_in_matrix(inputted_guess, matrix = '', unnecessary_char = '')
-      inputted_guess.each_char do |char|
-        if @secret_code.include?(char) && !unnecessary_char.include?(char)
-          matrix += INCLUSION_SYMBOL
-          unnecessary_char += char
-        end
-      end
-      [inputted_guess, matrix, unnecessary_char]
+    def generate_matrix(inputted_guess)
+      guess_validator(inputted_guess)
+      user.attempts -= 1
+      matrix(inputted_guess)
     end
   end
-
-  class Error < StandardError; end
 end
