@@ -1,9 +1,12 @@
- 
 AllCops:
-  NewCops: enable
+  Exclude:
+    - 'vendor/bundle/**/*'
+    - 'spec/**/*.rb'
+  TargetRubyVersion: 2.7
 
 Style/FrozenStringLiteralComment:
   Enabled: false
 
 Style/Documentation:
   Enabled: false 
+  

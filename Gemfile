@@ -2,7 +2,7 @@
 
 source 'https://rubygems.org'
 
-gemspec
+gem 'rspec', '~> 3.10.0'
 
 gem 'rake', '~> 13.0'
 
@@ -12,4 +12,4 @@ gem 'fasterer', '~> 0.8.3'
 
 gem 'simplecov', '~> 0.21.2'
 
-gem 'ffaker', '~> 2.18.0'
+gem 'ffaker', '~> 2.20'

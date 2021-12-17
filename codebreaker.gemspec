@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'lib/codebreaker/version'
 
 Gem::Specification.new do |spec|
