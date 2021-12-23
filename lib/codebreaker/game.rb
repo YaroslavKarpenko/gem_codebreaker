@@ -73,5 +73,9 @@ module Codebreaker
       user.attempts -= 1
       matrix(inputted_guess)
     end
+
+    def save_game(game)
+      save_file(game)
+    end
   end
 end
