@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'autoloader'
-require_relative 'validation/validation'
+
 module Codebreaker
   class Game
     include Constants
