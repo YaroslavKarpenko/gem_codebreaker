@@ -7,6 +7,7 @@ module Codebreaker
     include Constants
     include Validation
     include CoreMatrix
+    include FileStore
 
     attr_reader :secret_code, :user, :attempts, :hints, :name
     attr_accessor :difficulty
