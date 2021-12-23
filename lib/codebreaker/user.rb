@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require_relative 'validation/validation'
+
 require_relative 'autoloader'
 module Codebreaker
   class User
