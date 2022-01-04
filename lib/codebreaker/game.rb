@@ -9,8 +9,8 @@ module Codebreaker
     include CoreMatrix
     include FileStore
 
-    attr_reader :secret_code, :user, :attempts, :hints, :name
-    attr_accessor :difficulty, :phase
+    attr_reader :secret_code, :attempts, :hints, :name
+    attr_accessor :difficulty, :phase, :user
 
     def initialize(secret_code: '', user: User.new, difficulty: DIFFICULTIES, phase: START_POINT)
       @secret_code = secret_code
