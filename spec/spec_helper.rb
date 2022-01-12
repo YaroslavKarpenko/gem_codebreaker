@@ -8,4 +8,4 @@ SimpleCov.start do
 end
 
 require 'ffaker'
-require_relative 'spec_loader'
+require_relative '../lib/codebreaker'
