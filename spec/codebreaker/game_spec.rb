@@ -43,7 +43,7 @@ module Codebreaker
     end
     describe '#matrix' do
       it 'should decrease attempts by 1' do
-        expect { game.generate_matrix([1, 1, 1, 1]) }.to change(game.user, :attempts).by(-1)
+        expect { game.display_matrix([1, 1, 1, 1]) }.to change(game.user, :attempts).by(-1)
       end
     end
   end

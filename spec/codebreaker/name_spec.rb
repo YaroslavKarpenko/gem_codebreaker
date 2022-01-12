@@ -5,7 +5,6 @@ module Codebreaker
 
     before(:each) do
       game.difficulty = difficulty
-      game.start
     end
 
     describe '#assign_name' do

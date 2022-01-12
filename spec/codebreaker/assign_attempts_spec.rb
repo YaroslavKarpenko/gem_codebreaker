@@ -5,7 +5,6 @@ module Codebreaker
 
     before(:each) do
       game.difficulty = difficulty
-      game.start
     end
 
     describe '#available_attempts' do
@@ -20,7 +19,7 @@ module Codebreaker
 
       it 'returns false if attempts were used' do
         game.user.attempts = 1
-        game.generate_matrix([1, 1, 1, 1])
+        game.display_matrix([1, 1, 1, 1])
         expect(game.check_for_attempts?).to be_falsy
       end
     end

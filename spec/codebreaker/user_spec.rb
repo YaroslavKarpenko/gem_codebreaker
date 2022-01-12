@@ -6,14 +6,13 @@ module Codebreaker
     before do
       game.difficulty = difficulty
       game.assign_difficulty
-      game.start
     end
     it 'checks attempts amount' do
       expect(game.user.attempts).to eq 15
     end
 
     it 'checks dicreasing of attempts' do
-      game.generate_matrix([1, 1, 1, 1])
+      game.display_matrix([1, 1, 1, 1])
       expect(game.user.attempts).to eq 14
     end
 
