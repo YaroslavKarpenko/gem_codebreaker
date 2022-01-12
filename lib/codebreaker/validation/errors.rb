@@ -11,9 +11,3 @@ class InputError < StandardError
     super
   end
 end
-
-class PhaseError < StandardError
-  def initialize(msg = 'Incorrect phase of the game')
-    super
-  end
-end
