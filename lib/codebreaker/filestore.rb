@@ -10,8 +10,6 @@ module Codebreaker
     FILE_NAME = 'players.yml'
 
     def save_file(game)
-      raise PhaseError unless game.phase == WIN
-
       rating = load_file
       rating << fetch_game_data(game)
       store = YAML::Store.new(storage_path)
