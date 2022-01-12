@@ -10,7 +10,7 @@ executors:
           BUNDLER_VERSION: 2.0.1
           
 cashes:
-  - &bundle_caches_v1 v2-repo-{{ checksum "Gemfile.lock" }}
+  - &bundle_caches_v2 v2-repo-{{ checksum "Gemfile.lock" }}
   - &bundle_cache v2-repo-
 commands:
   defaults:
