@@ -9,23 +9,14 @@ module Codebreaker
     include CoreMatrix
     include FileStore
 
-    attr_reader :secret_code, :user, :attempts, :hints, :name
-    attr_accessor :difficulty, :phase
+    attr_reader :secret_code, :attempts, :hints, :name
+    attr_accessor :difficulty, :user
 
-    def initialize(secret_code: '', user: User.new, difficulty: DIFFICULTIES, phase: START_POINT)
+    def initialize(secret_code = SECRET_CODE_RANGE.sample(SECRET_CODE_LENGTH), user: User.new, difficulty: DIFFICULTIES)
       @secret_code = secret_code
       @user = user
       @difficulty = difficulty
-      @phase = phase
-    end
-
-    def start
-      raise PhaseError unless @phase == START_POINT
-
-      @secret_code = SECRET_CODE_RANGE.sample(SECRET_CODE_LENGTH)
       @available_hints = @secret_code.dup
-      @phase = GAME_IN_PROGRESS
-      assign_difficulty
     end
 
     def use_hint
@@ -43,11 +34,11 @@ module Codebreaker
     end
 
     def check_for_hints?
-      (user.hints <= DIFFICULTIES[@difficulty][:hints]) && user.hints.positive?
+      (user.hints <= DIFFICULTIES[@difficulty][:hints]) && !user.hints.zero?
     end
 
     def check_for_attempts?
-      (user.attempts < DIFFICULTIES[@difficulty][:attempts]) && user.attempts.positive?
+      (user.attempts < DIFFICULTIES[@difficulty][:attempts]) && !user.attempts.zero?
     end
 
     def available_difficulties
@@ -57,19 +48,16 @@ module Codebreaker
     def win?(result)
       return unless result == @secret_code
 
-      @phase = WIN
       true
     end
 
     def lose?
       return unless user.attempts.zero?
-      raise PhaseError unless user.attempts.zero?
 
-      @phase = LOSE
       true
     end
 
-    def generate_matrix(inputted_guess)
+    def display_matrix(inputted_guess)
       guess_validator(inputted_guess)
       user.attempts -= 1
       matrix(inputted_guess)
