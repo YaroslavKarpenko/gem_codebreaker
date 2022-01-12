@@ -1,8 +1,8 @@
 module Codebreaker
   RSpec.describe FileStore do
     let(:test_class) { Class.new { include FileStore }.new }
-    let(:user) { double(User, name: 'player1', hints: 2, attempts: 15) }
-    let(:game) { double(Game, user: user, difficulty: :easy, phase: Constants::WIN) }
+    let(:user) { User.new(name: 'player1', hints: 2, attempts: 15) }
+    let(:game) { Game.new(user: user, difficulty: :easy) }
 
     describe '#load_file' do
       before do
