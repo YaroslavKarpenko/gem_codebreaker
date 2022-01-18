@@ -12,8 +12,8 @@ module Codebreaker
     attr_reader :secret_code, :attempts, :hints, :name
     attr_accessor :difficulty, :user
 
-    def initialize(secret_code = SECRET_CODE_RANGE.sample(SECRET_CODE_LENGTH), user: User.new, difficulty: DIFFICULTIES)
-      @secret_code = secret_code
+    def initialize(user: User.new, difficulty: DIFFICULTIES)
+      @secret_code = SECRET_CODE_RANGE.sample(SECRET_CODE_LENGTH)
       @user = user
       @difficulty = difficulty
       @available_hints = @secret_code.dup
