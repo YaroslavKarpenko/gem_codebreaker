@@ -1,7 +1,4 @@
 AllCops:
-  Exclude:
-    - 'vendor/bundle/**/*'
-    - 'spec/**/*.rb'
   TargetRubyVersion: 2.7
 
 Style/FrozenStringLiteralComment:
@@ -9,3 +6,9 @@ Style/FrozenStringLiteralComment:
 
 Style/Documentation:
   Enabled: false
+  
+Metrics/BlockLength:
+  Exclude:
+   - 'spec/**/*.rb'
+   - 'codebreaker.gemspec'
+    
